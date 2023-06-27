@@ -1,0 +1,228 @@
+                                            Optimising Procrss Indexing
+
+show databases;
+Weather      3.61 MiB
+admin       40.00 KiB
+city        11.71 MiB
+config     108.00 KiB
+local       80.00 KiB
+unversity  144.00 KiB
+use city
+already on db city
+show collections;
+city_data
+db.city_data.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { 'address.city': 1 }, name: 'address.city_1' }
+]
+db.city_data.find({"address.street": "FREDERICK DOUGLASS BLVD"}).count();
+213
+db.city_data.find({"address.street": "FREDERICK DOUGLASS BLVD"}).explain("executionStats");
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'city.city_data',
+    indexFilterSet: false,
+    parsedQuery: {
+      'address.street': {
+        '$eq': 'FREDERICK DOUGLASS BLVD'
+      }
+    },
+    queryHash: '911BAE14',
+    planCacheKey: '911BAE14',
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'COLLSCAN',
+      filter: {
+        'address.street': {
+          '$eq': 'FREDERICK DOUGLASS BLVD'
+        }
+      },
+      direction: 'forward'
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 213,
+    executionTimeMillis: 119,
+    totalKeysExamined: 0,
+    totalDocsExamined: 81046,
+    executionStages: {
+      stage: 'COLLSCAN',
+      filter: {
+        'address.street': {
+          '$eq': 'FREDERICK DOUGLASS BLVD'
+        }
+      },
+      nReturned: 213,
+      executionTimeMillisEstimate: 7,
+      works: 81048,
+      advanced: 213,
+      needTime: 80834,
+      needYield: 0,
+      saveState: 81,
+      restoreState: 81,
+      isEOF: 1,
+      direction: 'forward',
+      docsExamined: 81046
+    }
+  },
+  command: {
+    find: 'city_data',
+    filter: {
+      'address.street': 'FREDERICK DOUGLASS BLVD'
+    },
+    '$db': 'city'
+  },
+  serverInfo: {
+    host: 'Developer',
+    port: 27017,
+    version: '6.0.6',
+    gitVersion: '26b4851a412cc8b9b4a18cdb6cd0f9f642e06aa7'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600
+  },
+  ok: 1
+}
+db.city_data.createIndex({"address.street": 1});
+address.street_1
+db.city_data.getIndexes();
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { 'address.city': 1 }, name: 'address.city_1' },
+  { v: 2, key: { 'address.street': 1 }, name: 'address.street_1' }
+]
+db.city_data.find({"address.street": "FREDERICK DOUGLASS BLVD"}).explain("executionStats");
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'city.city_data',
+    indexFilterSet: false,
+    parsedQuery: {
+      'address.street': {
+        '$eq': 'FREDERICK DOUGLASS BLVD'
+      }
+    },
+    queryHash: '911BAE14',
+    planCacheKey: '7D519201',
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: {
+          'address.street': 1
+        },
+        indexName: 'address.street_1',
+        isMultiKey: false,
+        multiKeyPaths: {
+          'address.street': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          'address.street': [
+            '["FREDERICK DOUGLASS BLVD", "FREDERICK DOUGLASS BLVD"]'
+          ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 213,
+    executionTimeMillis: 4,
+    totalKeysExamined: 213,
+    totalDocsExamined: 213,
+    executionStages: {
+      stage: 'FETCH',
+      nReturned: 213,
+      executionTimeMillisEstimate: 0,
+      works: 214,
+      advanced: 213,
+      needTime: 0,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      docsExamined: 213,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 213,
+        executionTimeMillisEstimate: 0,
+        works: 214,
+        advanced: 213,
+        needTime: 0,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        keyPattern: {
+          'address.street': 1
+        },
+        indexName: 'address.street_1',
+        isMultiKey: false,
+        multiKeyPaths: {
+          'address.street': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          'address.street': [
+            '["FREDERICK DOUGLASS BLVD", "FREDERICK DOUGLASS BLVD"]'
+          ]
+        },
+        keysExamined: 213,
+        seeks: 1,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  command: {
+    find: 'city_data',
+    filter: {
+      'address.street': 'FREDERICK DOUGLASS BLVD'
+    },
+    '$db': 'city'
+  },
+  serverInfo: {
+    host: 'Developer',
+    port: 27017,
+    version: '6.0.6',
+    gitVersion: '26b4851a412cc8b9b4a18cdb6cd0f9f642e06aa7'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 104857600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 104857600,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600
+  },
+  ok: 1
+}
