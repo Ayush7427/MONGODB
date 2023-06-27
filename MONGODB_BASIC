@@ -1,0 +1,153 @@
+show databases;
+Weather      3.61 MiB
+admin       40.00 KiB
+city        11.71 MiB
+config      72.00 KiB
+local       80.00 KiB
+unversity  144.00 KiB
+use Weather;
+switched to db Weather
+show collections;
+weather_data
+db.weather_data.find().limit(1);
+{
+  _id: ObjectId("5553a998e4b02cf7151190bb"),
+  st: 'x+60900-005300',
+  ts: 1984-03-05T15:00:00.000Z,
+  position: {
+    type: 'Point',
+    coordinates: [
+      -5.3,
+      60.9
+    ]
+  },
+  elevation: 9999,
+  callLetters: 'TFRB',
+  qualityControlProcess: 'V020',
+  dataSource: '4',
+  type: 'FM-13',
+  airTemperature: {
+    value: 7.5,
+    quality: '1'
+  },
+  dewPoint: {
+    value: 999.9,
+    quality: '9'
+  },
+  pressure: {
+    value: 1018.5,
+    quality: '1'
+  },
+  wind: {
+    direction: {
+      angle: 220,
+      quality: '1'
+    },
+    type: 'N',
+    speed: {
+      rate: 12.3,
+      quality: '1'
+    }
+  },
+  visibility: {
+    distance: {
+      value: 4000,
+      quality: '1'
+    },
+    variability: {
+      value: 'N',
+      quality: '9'
+    }
+  },
+  skyCondition: {
+    ceilingHeight: {
+      value: 99999,
+      quality: '9',
+      determination: '9'
+    },
+    cavok: 'N'
+  },
+  sections: [
+    'AG1',
+    'AY1',
+    'GF1',
+    'MW1'
+  ],
+  precipitationEstimatedObservation: {
+    discrepancy: '2',
+    estimatedWaterDepth: 0
+  },
+  pastWeatherObservationManual: [
+    {
+      atmosphericCondition: {
+        value: '0',
+        quality: '1'
+      },
+      period: {
+        value: 3,
+        quality: '1'
+      }
+    }
+  ],
+  skyConditionObservation: {
+    totalCoverage: {
+      value: '08',
+      opaque: '99',
+      quality: '1'
+    },
+    lowestCloudCoverage: {
+      value: '99',
+      quality: '9'
+    },
+    lowCloudGenus: {
+      value: '99',
+      quality: '9'
+    },
+    lowestCloudBaseHeight: {
+      value: 99999,
+      quality: '9'
+    },
+    midCloudGenus: {
+      value: '99',
+      quality: '9'
+    },
+    highCloudGenus: {
+      value: '99',
+      quality: '9'
+    }
+  },
+  presentWeatherObservationManual: [
+    {
+      condition: '02',
+      quality: '1'
+    }
+  ]
+}
+db.weather_data.find({"airTemperature.value": 7.5}).count();
+38
+db.weather_data.find({"airTemperature.value": {$gt: 7.5}}).count();
+6589
+db.weather_data.find({"airTemperature.value": {$lt: 6.5}}).count();
+2584
+db.weather_data.find({$or: [{"airTemperature.value": {$gt: 7.5}} , {"airTemperature.value": {$lt: 6.5}}]}).count();
+9578
+db.weather_data.find({"airTemperature.value": {$ne: 7.5}}).count();
+9885
+db.weather_data.distinct("airTemperature.value");
+[
+    -77, -44.2, -43.5,   -42, -41.4, -41.2, -40.9, -40.6, -36.5,
+  -34.5, -33.7, -32.7, -32.4, -32.3, -32.2, -31.5, -31.1, -30.6,
+    -30,   -29, -28.7, -28.3,   -28, -27.5, -27.3, -26.7, -26.5,
+  -26.2, -25.4, -25.2,   -25, -23.5, -22.9, -22.7, -22.2,   -19,
+  -18.9, -18.3, -18.1, -17.2,   -17, -16.5,   -14, -13.5, -13.2,
+  -12.8, -12.6, -12.5, -11.4, -11.2,   -11, -10.5,   -10,  -9.8,
+   -9.7,  -9.6,  -9.5,  -9.4,  -9.3,  -9.1,    -9,  -8.9,  -8.7,
+   -8.2,  -8.1,    -8,  -7.8,  -7.6,  -7.5,  -7.4,  -7.2,  -7.1,
+     -7,  -6.8,  -6.7,  -6.5,  -6.4,  -6.3,  -6.2,  -6.1,    -6,
+   -5.8,  -5.7,  -5.6,  -5.5,  -5.4,  -5.3,  -5.2,  -5.1,    -5,
+   -4.9,  -4.8,  -4.7,  -4.6,  -4.5,  -4.4,  -4.3,  -4.2,  -4.1,
+     -4,
+  ... 382 more items
+]
+db.weather_data.find({"airTemperature.value": {$in: [-17.2, -17, -16.5]}}).count();
+3
